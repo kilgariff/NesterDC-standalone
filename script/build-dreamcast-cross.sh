@@ -40,9 +40,9 @@
 #   building cross compiler takes a long time. wait. 
 #
 
-src_dir=/home/const/cross/src
-prefix=/home/const/cross/dreamcast
-distfiles=/home/const/distfiles/cross
+src_dir=/home/ross/dreamcast/src
+prefix=/home/ross/dreamcast/prefix
+distfiles=/home/ross/dreamcast/distfiles
 binutils_version="2.13.1"
 binutils_targz="binutils-2.13.1.tar.gz"
 gcc_version="3.2"
@@ -50,8 +50,7 @@ gcc_targz="gcc-3.2.tar.gz"
 newlib_version=1.10.0
 newlib_targz="newlib-1.10.0.tar.gz"
 
-local_make=gmake
-
+local_make=make
 
 #========================================
 # don't edit below
@@ -117,7 +116,7 @@ build_binutils () {
     
     line="$line $src_dir/binutils-${binutils_version}/configure $configure_args"
     line="$line &&"
-    line="$line ${local_make} all check install"
+    line="$line ${local_make} all check install -j 5"
     do_command "$line"
 }
 
@@ -146,7 +145,7 @@ build_gcc () {
     
     line="$line $src_dir/gcc-${gcc_version}/configure $configure_args"
     line="$line &&"
-    line="$line ${local_make} all check install ASFLAGS+='-little'"
+    line="$line ${local_make} all check install ASFLAGS+='-little' -j 5"
     do_command "$line"
 }
 
@@ -166,7 +165,7 @@ build_newlib () {
     
     line="$line $src_dir/newlib-${newlib_version}/configure $configure_args"
     line="$line &&"
-    line="$line ${local_make} all check install ASFLAGS+='-little'"
+    line="$line ${local_make} all check install ASFLAGS+='-little' -j 5"
     do_command "$line"
 }
 

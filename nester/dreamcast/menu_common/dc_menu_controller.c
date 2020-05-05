@@ -202,49 +202,13 @@ display_menu ()
 
 void
 dc_menu_controller()
-{
-  int physical_index;
-  dc_menu_controller_status_t *p;
-  
+{  
   dc_menu_maple_scan ();
   dc_menu_controller_status_init ();
   
-  for (;;)
-  {
-    dc_menu_maple_scan ();
-    dc_menu_controller_status_scan ();
-    display_menu();
+  dc_menu_maple_scan ();
+  dc_menu_controller_status_scan ();
     
-    p = dc_menu_controller_status;
-    physical_index = 0;
-    while (p->dev)
-    {
-      if (dc_menu_keypress(p->B))
-        set_virtual_index (physical_index, physical_index);
-      
-      if (dc_menu_keypress(p->X))
-      {
-        int next = dc_maple_controller_virtual_index[physical_index] + 1;
-        if (next == dc_maple_controller_info_size) next = 0;
-        set_virtual_index (next, physical_index);
-      }
-      
-      if (dc_menu_keypress(p->Y))
-      {
-        int next = dc_maple_controller_virtual_index[physical_index] - 1;
-        if (next < 0) next = dc_maple_controller_info_size - 1;
-        set_virtual_index (next, physical_index);
-      }
-      
-      if (dc_menu_keypress(p->START))
-        goto finish;
-      
-      ++p;
-      ++physical_index;
-    }
-  }
-  
-finish:
   dc_menu_sync_to_virtual_port ();
 }
 

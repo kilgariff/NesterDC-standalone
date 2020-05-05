@@ -103,6 +103,8 @@ void dc_pvr_diagram_commit_box (float x1, float y1, float x2, float y2, float z,
 /* ------------------------------------------------------------ */
 /* BMP handling */
 int load_bmp (uint16 *raw, const char *filename);
+int load_bmp_vmu (uint8 *raw, const char *filename);
+
 void dc_bmpimage_copy_texture_320x240to512x256 (pvr_ptr_t txr_addr, uint16 *raw);
 void dc_bmpimage_commit_texture_320x240on512x256 (pvr_poly_hdr_t *poly);
 

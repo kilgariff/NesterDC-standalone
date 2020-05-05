@@ -2,8 +2,8 @@
 
 #============================================================
 # Edit for your environment
-export NDC_BASE=/home/tekezo/work/tmp/nesterdc-7.1
-export CROSS_BASE=/home/const/cross/dreamcast
+export NDC_BASE=/home/ross/Desktop/NesterDC
+export CROSS_BASE=/home/ross/dreamcast/prefix
 
 #NESTER_OPTIONS="${NESTER_OPTIONS} -D__DC_PAL__" 
 
@@ -47,7 +47,7 @@ KOS_INCS="${KOS_INCS} -I${KOS_BASE}/kernel/arch/dreamcast/include"
 export KOS_INCS
 
 # Make utility
-export KOS_MAKE="gmake"
+export KOS_MAKE="make"
 
 # Load utility
 export KOS_LOADER="${KOS_BASE}/utils/ipload/ipload.py"

@@ -82,14 +82,13 @@ dc_settings_init()
   dc_settings.frameskip_rate = FRAMESKIP_x1;
   dc_settings.enable_sound = 1;
   dc_settings.enable_exsound = 1;
-  dc_settings.enable_vmu = 1;
-  dc_settings.enable_bilinear_filter = 1;
+  dc_settings.enable_vmu = 0;
+  dc_settings.enable_bilinear_filter = 0;
   
   dc_settings.enable_autofire = 0;
   dc_settings.enable_autofire_a = 1;
   dc_settings.enable_autofire_b = 1;
 }
-
 
 static const char *dc_settings_filename = "ndc_r7.1";
 static const uint8 nesterdc_icon[] = {
@@ -622,71 +621,6 @@ poll_input(NES* emu)
   {
     stat = (cont_state_t *)maple_dev_status (p->dev);
     
-    if (stat->joyy < -120) /* analog UP */
-    {
-      interrupt_game_loop = true;
-      dc_settings.frameskip_rate = FRAMESKIP_NONE;
-      return;
-    }
-    else if (stat->joyy > 120) /* analog DOWN */
-    {
-      interrupt_game_loop = true;
-      dc_settings.frameskip_rate = FRAMESKIP_x2;
-      return;
-    }
-    else if (stat->joyx < -120) /* analog LEFT */
-    {
-      interrupt_game_loop = true;
-      dc_settings.frameskip_rate = (stat->rtrig > 128) ? FRAMESKIP_x4 : FRAMESKIP_x1_5;
-      return;
-    }
-    else if (stat->joyx > 120) /* analog RIGHT */
-    {
-      interrupt_game_loop = true;
-      dc_settings.frameskip_rate = FRAMESKIP_x1;
-      return;
-    }
-    
-    if (stat->rtrig > 128) 
-    {
-      if ((stat->ltrig > 128) && (stat->buttons & CONT_START))
-      {
-	exit_game_loop = true;
-	interrupt_game_loop = true;
-	return;
-      }
-      else if (stat->buttons & CONT_B)
-      {
-	dc_menu_ingame_statesave (emu, DC_MENU_INGAME_STATESAVE_QUICK, vmu_dev);
-	interrupt_game_loop = true;
-	return;
-      }
-      else if (stat->buttons & CONT_Y)
-      {
-	dc_menu_ingame_statesave (emu, DC_MENU_INGAME_STATESAVE_VMU, vmu_dev);
-	interrupt_game_loop = true;
-	return;
-      }
-      else if (stat->buttons & CONT_X)
-      {
-	dc_menu_ingame_system (emu);
-	interrupt_game_loop = true;
-	return;
-      }
-      else if (stat->buttons & CONT_A)
-      {
-	dc_menu_ingame_option (emu);
-	interrupt_game_loop = true;
-	return;
-      }
-      else if (stat->buttons & CONT_START)
-      {
-        dc_menu_ingame_cheat (emu);
-        interrupt_game_loop = true;
-        return;
-      }
-    }
-    
     /* ------------------------------------------------------------ */
     /* NesterDC specific */
     pad = emu->get_pad (n & 0x03);
@@ -694,28 +628,6 @@ poll_input(NES* emu)
     
     if (p->type.c_type == DC_MAPLE_CONTROLLER_ARCADESTICK)
     {
-      static int c_counter[DC_MAPLE_INFO_SIZE];
-      
-      if (stat->buttons & CONT_C)
-        ++(c_counter[n]);
-      else
-        c_counter[n] = 0;
-      
-      if (c_counter[n] == 1) 
-      {
-        dc_settings.enable_autofire = !(dc_settings.enable_autofire);
-        interrupt_game_loop = true;
-        return;
-      }
-      
-      if (dc_settings.enable_autofire && autofire_counter)
-      {
-	if (dc_settings.enable_autofire_b && (stat->buttons & CONT_X))
-	  buttons &= ~CONT_X;
-	if (dc_settings.enable_autofire_a && (stat->buttons & CONT_Y))
-	  buttons &= ~CONT_Y;
-      }
-      
       pad->nes_A = buttons & CONT_Y;
       pad->nes_B = buttons & CONT_X;
       pad->nes_SELECT = buttons & CONT_Z;
@@ -723,38 +635,16 @@ poll_input(NES* emu)
     }
     else
     {
-      static int ltrig_counter[DC_MAPLE_INFO_SIZE];
-      
-      if (stat->ltrig > 128)
-        ++(ltrig_counter[n]);
-      else
-        ltrig_counter[n] = 0;
-      
-      if (ltrig_counter[n] == 1) 
-      {
-        dc_settings.enable_autofire = !(dc_settings.enable_autofire);
-        interrupt_game_loop = true;
-        return;
-      }
-      
-      if (dc_settings.enable_autofire && autofire_counter)
-      {
-	if (dc_settings.enable_autofire_b && (stat->buttons & CONT_X))
-	  buttons &= ~CONT_X;
-	if (dc_settings.enable_autofire_a && (stat->buttons & CONT_A))
-	  buttons &= ~CONT_A;
-      }
-      
       pad->nes_A = buttons & CONT_A;
       pad->nes_B = buttons & CONT_X;
       pad->nes_SELECT = buttons & CONT_Y;
       pad->nes_START = buttons & CONT_START;
     }
     
-    pad->nes_UP = buttons & CONT_DPAD_UP;
-    pad->nes_DOWN = buttons & CONT_DPAD_DOWN;
-    pad->nes_LEFT = buttons & CONT_DPAD_LEFT;
-    pad->nes_RIGHT = buttons & CONT_DPAD_RIGHT;
+    pad->nes_UP = (buttons & CONT_DPAD_UP) || stat->joyy < -120;
+    pad->nes_DOWN = (buttons & CONT_DPAD_DOWN) || stat->joyy > 120;
+    pad->nes_LEFT = (buttons & CONT_DPAD_LEFT) || stat->joyx < -120;
+    pad->nes_RIGHT = (buttons & CONT_DPAD_RIGHT) || stat->joyx > 120;
     
     ++p;
     ++n;
@@ -1000,6 +890,8 @@ do_autoloop (NES *emu, int cycles_per_sec)
   timer_stop (TMU2);
 }
 
+static bool should_draw_vmu_lcd_bitmap = false;
+static uint8 vmu_lcd_bitmap[192];
 
 static void
 do_loop (NES *emu)
@@ -1007,10 +899,25 @@ do_loop (NES *emu)
   exit_game_loop = false;
   interrupt_game_loop = false;
   
-  while (!exit_game_loop) 
+  while (!exit_game_loop)
   {
     emu->freeze ();
-    vmu_draw_settings (emu);
+
+    // Display VMU bitmap.
+    if (should_draw_vmu_lcd_bitmap)
+    {
+      int i = 0;
+      while (1)
+      {
+        maple_device_t *dev;
+        
+        dev = maple_enum_type (i++, MAPLE_FUNC_LCD);
+        if (!dev) break;
+        
+        vmu_draw_lcd (dev, vmu_lcd_bitmap);
+      }
+    }
+
     emu->thaw ();
     interrupt_game_loop = false;
     
@@ -1037,7 +944,7 @@ run_game(const char *filename)
   NES *emu = NULL;
   sound_mgr *snd_mgr = NULL;
   
-  dc_pvr_font_output_message ("Initialize", "Wait A Moment", NULL, NULL);
+  //dc_pvr_font_output_message ("It's FLEA time :)", "Loading FLEA!", NULL, NULL);
   
   if (dc_settings.enable_sound)
     snd_mgr = new dc_sound_mgr ();
@@ -1237,41 +1144,6 @@ dc_main_loadbmp_bgfunc ()
   dc_bmpimage_commit_texture_320x240on512x256 (&dc_pvr_poly_header);
 }
 
-
-static void
-dc_main_loadbmp ()
-{
-  bmpimage_fileinfo_t bmpimage_fileinfo[] = {
-    { "/cd/pics/menu.bmp", menu_image },
-    { "/cd/pics/credits.bmp", credits_image },
-    { "/cd/pics/options.bmp", options_image },
-    { "/cd/pics/vmu_menu.bmp", vmu_menu_image },
-    { "/cd/pics/menu_selection.bmp", menu_selection_image },
-  };
-  bmpimage_fileinfo_t *p;
-  int i;
-  const char *nesterdc_version = "NesterDC 7.1";
-  
-  dc_pvr_font_output_message (nesterdc_version, NULL, "loading bmp-images", NULL);
-  load_bmp (startup_image, "/cd/pics/startup.bmp");
-  dc_bmpimage_copy_texture_320x240to512x256 (dc_texture_addr, startup_image);
-  
-  p = bmpimage_fileinfo;
-  for (i = 0; i < sizeof(bmpimage_fileinfo)/sizeof(bmpimage_fileinfo[0]); ++i)
-  {
-    dc_pvr_font_output_message (nesterdc_version, NULL, p->filename, dc_main_loadbmp_bgfunc);
-    load_bmp (p->buf, p->filename);
-    ++p;
-  }
-}
-
-
-/* ============================================================ */
-#if 0
-#include "testing.cpp"
-#endif
-
-
 const char *progname = "***NesterDC***";
 KOS_INIT_FLAGS(INIT_IRQ);
 
@@ -1294,24 +1166,10 @@ main()
   
   dc_menu_controller ();
   
-#if 0
-  test_all ();
-#endif
-  
-  dc_main_loadbmp();
-  
-  vmu_dev = dc_vmu_search_file (dc_settings_filename);
-  if (!vmu_dev) 
-  {
-    vmu_dev = dc_menu_filelist_vmuselect ();
-    if (vmu_dev) dc_settings_save (vmu_dev);
-  }
-  if (vmu_dev) dc_settings_load (vmu_dev);
-  
-  sprintf (last_romfile, "/cd/games/game.nes");
-  
-  run_game ("/cd/games/game.nes");
-  dc_menu_main_menu();
+  should_draw_vmu_lcd_bitmap =
+    load_bmp_vmu(vmu_lcd_bitmap, "/cd/vmu_image.bmp") == 0;
+
+  run_game ("/cd/game.nes");
   
   dc_lcd_clear ();
   
