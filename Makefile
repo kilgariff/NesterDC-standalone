@@ -1,8 +1,8 @@
 STARTUP = $(KOS_BASE)/kernel/arch/dreamcast/kernel/startup.o
-NESTERDC_LIBS = -L$(KOS_BASE)/lib -lkallisti -L$(BZ_BASE) -lbz2
-NESTERDC_LIBS += -lsupc++ -lm -lc -lgcc
+NESTERDC_LIBS = -L$(KOS_BASE)/lib -lkallisti -L$(BZ_BASE) -lbz2 -L${KOS_CC_BASE}/../newlibc_hack
+NESTERDC_LIBS += -lsupc++ -lm -lnewlibc -lgcc
 
-all: 
+all:
 	$(KOS_MAKE) -C utils 
 	$(KOS_MAKE) -C $(BZ_BASE)
 	$(KOS_MAKE) -C $(KOS_BASE)

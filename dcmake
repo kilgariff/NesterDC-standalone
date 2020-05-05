@@ -69,6 +69,7 @@ export KOS_STRIP="${KOS_CC_BASE}/bin/${SH_TARGET}-strip"
 export KOS_CFLAGS="${SH_CFLAGS} -O2"
 export KOS_CPPFLAGS="${SH_CXXFLAGS}"
 export KOS_AFLAGS="-little"
+# See the readme in the toolchain's newlibc_hack for details.
 export KOS_LDFLAGS="${SH_TARGET_ARCH} -nostartfiles -nostdlib -Wl,-Tdreamcast.x"
 
 # ARM7 GCC paths
