@@ -206,7 +206,7 @@ dc_lcd_icon_draw_string (uint8 *screen, int x, int y, const char *str)
 
 
 void
-dc_lcd_icon_flip(const uint8 *screen) 
+dc_lcd_icon_flip(const uint8 *screen)
 {
   uint8 bitmap[(48 / 8) * 32];
   uint8 *b;

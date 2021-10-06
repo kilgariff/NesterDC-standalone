@@ -617,7 +617,7 @@ poll_input(NES* emu)
   
   n = 0;
   p = dc_maple_controller_info;
-  while (p->dev)
+  while (p->dev && n <= 3)
   {
     stat = (cont_state_t *)maple_dev_status (p->dev);
     
@@ -906,13 +906,14 @@ do_loop (NES *emu)
     // Display VMU bitmap.
     if (should_draw_vmu_lcd_bitmap)
     {
-      int i = 0;
+      int n = 0;
       while (1)
       {
         maple_device_t *dev;
         
-        dev = maple_enum_type (i++, MAPLE_FUNC_LCD);
+        dev = maple_enum_type (n, MAPLE_FUNC_LCD);
         if (!dev) break;
+        ++n;
         
         vmu_draw_lcd (dev, vmu_lcd_bitmap);
       }
@@ -923,11 +924,11 @@ do_loop (NES *emu)
     
     if (dc_settings.frameskip_rate == FRAMESKIP_NONE)
     {
-      while (!interrupt_game_loop) 
+      while (!interrupt_game_loop)
       {
-	emu->emulate_frame (nes_screen);
-	poll_input(emu);
-	display_nes_screen (emu);
+        emu->emulate_frame (nes_screen);
+        poll_input(emu);
+        display_nes_screen (emu);
       }
     }
     else
