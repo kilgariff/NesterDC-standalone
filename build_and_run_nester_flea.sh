@@ -48,14 +48,14 @@ if [ -f "$FIRST_READ_FILE" ]; then
     mkisofs -V flea -G $DIST_PATH/IP.BIN -l -r -o $DIST_PATH/flea.iso $DIST_PATH/cd
 
     # Send ISO file over network to dreamcast.
-    $DCTOOL_IP  -t 10.0.0.2 -i "$DIST_PATH/flea.iso" -x $UNSCRAMBLED_BINARY
+    #$DCTOOL_IP  -t 10.0.0.2 -i "$DIST_PATH/flea.iso" -x $UNSCRAMBLED_BINARY
 
     # Convert ISO into a data/data CDI file.
-    #$CDI4DC_PATH $DIST_PATH/flea.iso $DIST_PATH/flea.cdi -d
+    $CDI4DC_PATH $DIST_PATH/flea.iso $DIST_PATH/flea.cdi -d
 
     # Run with redream.
     #$REDREAM_BINARY $DIST_PATH/flea.cdi
 
     # Burn to CD.
-    #burncdi -c /dev/cdrom $DIST_PATH/flea.cdi
+    # burncdi -c /dev/cdrom $DIST_PATH/flea.cdi
 fi
