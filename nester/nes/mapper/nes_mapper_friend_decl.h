@@ -23,6 +23,7 @@ friend class NES_mapper23;
 friend class NES_mapper24;
 friend class NES_mapper25;
 friend class NES_mapper26;
+friend class NES_mapper30;
 friend class NES_mapper32;
 friend class NES_mapper33;
 friend class NES_mapper34;
