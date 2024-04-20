@@ -26,15 +26,31 @@ void NES_mapper30::MemoryWrite(uint32 addr, uint8 data)
   //set_VRAM_bank0(0,0);
 
   if (c == 0) {
+    set_VRAM_bank0(0, 0);
+    set_VRAM_bank0(1, 1);
+    set_VRAM_bank0(2, 2);
+    set_VRAM_bank0(3, 3);
+
+    ///// this works////
     set_VRAM_bank0(4, 4);
     set_VRAM_bank0(5, 5);
     set_VRAM_bank0(6, 6);
     set_VRAM_bank0(7, 7);
   } else {
-    set_VRAM_bank0(4, 8);
-    set_VRAM_bank0(5, 9);
-    set_VRAM_bank0(6, 10);
-    set_VRAM_bank0(7, 11);
+    set_VRAM_bank0(0, 8);
+    set_VRAM_bank0(1, 9);
+    set_VRAM_bank0(2, 10);
+    set_VRAM_bank0(3, 11);
+    set_VRAM_bank0(4, 12);
+    set_VRAM_bank0(5, 13);
+    set_VRAM_bank0(6, 14);
+    set_VRAM_bank0(7, 15);
+
+    ///// this works////
+    //set_VRAM_bank0(4, 8);
+    //set_VRAM_bank0(5, 9);
+    //set_VRAM_bank0(6, 10);
+    //set_VRAM_bank0(7, 11);
   }
 
 
