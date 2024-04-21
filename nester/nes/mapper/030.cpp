@@ -4,7 +4,7 @@
 #include "030.h"
 
 /////////////////////////////////////////////////////////////////////
-// Mapper 2
+// Mapper 30
 void NES_mapper30::Reset()
 {
   // set CPU bank pointers
@@ -13,8 +13,9 @@ void NES_mapper30::Reset()
 
 void NES_mapper30::MemoryWrite(uint32 addr, uint8 data)
 {
-  //data &= num_8k_ROM_banks-1;
-  //set_CPU_banks(data*2,(data*2)+1,num_8k_ROM_banks-2,num_8k_ROM_banks-1);
+  //real UNROM512 can often have bus conflicts.
+  //we're not going to try to emulate those here.
+
   uint8 prg = data & 0x1f;
   uint8 chr = (data & 0x60) >> 5;
 
@@ -25,37 +26,6 @@ void NES_mapper30::MemoryWrite(uint32 addr, uint8 data)
   for (int i = 0; i < 8; i++) {
     set_VRAM_bank0(i, i + c);
   }
-
-
-/*
-  if (c == 0) {
-    set_VRAM_bank0(0, 0);
-    set_VRAM_bank0(1, 1);
-    set_VRAM_bank0(2, 2);
-    set_VRAM_bank0(3, 3);
-    set_VRAM_bank0(4, 4);
-    set_VRAM_bank0(5, 5);
-    set_VRAM_bank0(6, 6);
-    set_VRAM_bank0(7, 7);
-  } else {
-    set_VRAM_bank0(0, 8);
-    set_VRAM_bank0(1, 9);
-    set_VRAM_bank0(2, 10);
-    set_VRAM_bank0(3, 11);
-    set_VRAM_bank0(4, 12);
-    set_VRAM_bank0(5, 13);
-    set_VRAM_bank0(6, 14);
-    set_VRAM_bank0(7, 15);
-
-    ///// this works////
-    //set_VRAM_bank0(4, 8);
-    //set_VRAM_bank0(5, 9);
-    //set_VRAM_bank0(6, 10);
-    //set_VRAM_bank0(7, 11);
-  }
- */
-
-
 }
 /////////////////////////////////////////////////////////////////////
 

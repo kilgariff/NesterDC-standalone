@@ -2,10 +2,9 @@
 #define __NES_MAPPER_030_H
 
 #include "nes_mapper.h"
-#include "nes_mapper.h"
 
 /////////////////////////////////////////////////////////////////////
-// Mapper 2
+// Mapper 30
 class NES_mapper30 : public NES_mapper
 {
 public:
