@@ -21,17 +21,18 @@ void NES_mapper30::MemoryWrite(uint32 addr, uint8 data)
   prg &= num_8k_ROM_banks-1;
   set_CPU_banks(prg*2,(prg*2)+1,num_8k_ROM_banks-2,num_8k_ROM_banks-1);
 
-  uint8 c = chr * 4;
-  //set_PPU_banks(c + 0, c + 1, c + 2, c + 3, c + 4, c + 5, c + 6, c+ 7);
-  //set_VRAM_bank0(0,0);
+  uint8 c = chr * 8;
+  for (int i = 0; i < 8; i++) {
+    set_VRAM_bank0(i, i + c);
+  }
 
+
+/*
   if (c == 0) {
     set_VRAM_bank0(0, 0);
     set_VRAM_bank0(1, 1);
     set_VRAM_bank0(2, 2);
     set_VRAM_bank0(3, 3);
-
-    ///// this works////
     set_VRAM_bank0(4, 4);
     set_VRAM_bank0(5, 5);
     set_VRAM_bank0(6, 6);
@@ -52,6 +53,7 @@ void NES_mapper30::MemoryWrite(uint32 addr, uint8 data)
     //set_VRAM_bank0(6, 10);
     //set_VRAM_bank0(7, 11);
   }
+ */
 
 
 }
