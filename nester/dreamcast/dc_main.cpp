@@ -636,12 +636,13 @@ poll_input(NES* emu)
     else
     {
       pad->nes_A = buttons & CONT_A;
-      pad->nes_B = buttons & CONT_X;
-      pad->nes_SELECT = buttons & CONT_Y;
+      pad->nes_B = buttons & (CONT_X | CONT_Y);
+      //pad->nes_SELECT = buttons & CONT_Y;
+      pad->nes_SELECT = 0;
       pad->nes_START = buttons & CONT_START;
     }
     
-    pad->nes_UP = (buttons & CONT_DPAD_UP) || stat->joyy < -120;
+    pad->nes_UP = (buttons & CONT_DPAD_UP) || stat->joyy < -120 || (buttons & CONT_Y);
     pad->nes_DOWN = (buttons & CONT_DPAD_DOWN) || stat->joyy > 120;
     pad->nes_LEFT = (buttons & CONT_DPAD_LEFT) || stat->joyx < -120;
     pad->nes_RIGHT = (buttons & CONT_DPAD_RIGHT) || stat->joyx > 120;
