@@ -79,6 +79,7 @@ OBJS += 099.o
 OBJS += 100.o
 OBJS += 101.o
 OBJS += 105.o
+OBJS += 111.o
 OBJS += 112.o
 OBJS += 113.o
 OBJS += 117.o
@@ -200,6 +201,7 @@ include $(NESTER_BASE)/Makefile.prefab
 100.o: 100.h ../../types.h ../nes.h ../nes_mapper.h
 101.o: 101.h ../../types.h ../nes.h ../nes_mapper.h
 105.o: 105.h ../../types.h ../nes.h ../nes_mapper.h
+111.o: 111.h ../../types.h ../nes.h ../nes_mapper.h
 112.o: 112.h ../../types.h ../nes.h ../nes_mapper.h
 113.o: 113.h ../../types.h ../nes.h ../nes_mapper.h
 117.o: 117.h ../../types.h ../nes.h ../nes_mapper.h
