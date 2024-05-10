@@ -25,6 +25,7 @@ OBJS += 023.o
 OBJS += 024.o
 OBJS += 025.o
 OBJS += 026.o
+OBJS += 030.o
 OBJS += 032.o
 OBJS += 033.o
 OBJS += 034.o
@@ -146,6 +147,7 @@ include $(NESTER_BASE)/Makefile.prefab
 024.o: 024.h ../../types.h ../nes.h ../nes_mapper.h
 025.o: 025.h ../../types.h ../nes.h ../nes_mapper.h
 026.o: 026.h ../../types.h ../nes.h ../nes_mapper.h
+030.o: 030.h ../../types.h ../nes.h ../nes_mapper.h
 032.o: 032.h ../../types.h ../nes.h ../nes_mapper.h
 033.o: 033.h ../../types.h ../nes.h ../nes_mapper.h
 034.o: 034.h ../../types.h ../nes.h ../nes_mapper.h

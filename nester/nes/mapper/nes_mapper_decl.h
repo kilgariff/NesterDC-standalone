@@ -27,6 +27,7 @@ class NES_mapper23;
 class NES_mapper24;
 class NES_mapper25;
 class NES_mapper26;
+class NES_mapper30;
 class NES_mapper32;
 class NES_mapper33;
 class NES_mapper34;
