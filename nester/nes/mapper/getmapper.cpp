@@ -249,6 +249,9 @@ GetMapper(int mapper_num)
   case 105:
     return new NES_mapper105();
 
+  case 111:
+    return new NES_mapper111();
+
   case 112:
     return new NES_mapper112();
 

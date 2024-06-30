@@ -82,6 +82,7 @@ class NES_mapper99;
 class NES_mapper100;
 class NES_mapper101;
 class NES_mapper105;
+class NES_mapper111;
 class NES_mapper112;
 class NES_mapper113;
 class NES_mapper117;

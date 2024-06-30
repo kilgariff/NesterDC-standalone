@@ -78,6 +78,7 @@ friend class NES_mapper99;
 friend class NES_mapper100;
 friend class NES_mapper101;
 friend class NES_mapper105;
+friend class NES_mapper111;
 friend class NES_mapper112;
 friend class NES_mapper113;
 friend class NES_mapper117;
