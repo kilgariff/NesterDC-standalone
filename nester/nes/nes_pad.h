@@ -24,6 +24,18 @@
 class NES_pad
 {
 public:
+
+  NES_pad()
+  : nes_A (false)
+  , nes_B (false)
+  , nes_SELECT (false)
+  , nes_START (false)
+  , nes_UP (false)
+  , nes_DOWN (false)
+  , nes_LEFT (false)
+  , nes_RIGHT (false)
+  {}
+
   bool nes_A;
   bool nes_B;
   bool nes_SELECT;
