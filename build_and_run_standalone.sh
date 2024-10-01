@@ -2,7 +2,7 @@
 
 GAME_NAME=the-storied-sword
 
-BUILD_SERVER_IP=192.168.1.40
+BUILD_SERVER_IP=ross@192.168.1.40
 DREAMCAST_IP=192.168.1.80
 
 BASE=/mnt/c/Users/rossk/Desktop/nesterdc-build-env/dreamcast-dev/nesterdc-toolchain
@@ -32,16 +32,16 @@ rsync -avPI $DREAMCAST_TOOLCHAIN_PATH/* $BUILD_SERVER_IP:$REMOTE_DC_TOOLCHAIN_PA
 rsync -avPI ./ $BUILD_SERVER_IP:$REMOTE_NESTER_PATH || fail
 
 # Run the KallistiOS build.
-#ssh -t ross@$BUILD_SERVER_IP "cd $REMOTE_NESTER_PATH/kos-1.1.8 && source ./environ-dc.sh && make clean && make" || fail
+#ssh -t $BUILD_SERVER_IP "cd $REMOTE_NESTER_PATH/kos-1.1.8 && source ./environ-dc.sh && make clean && make" || fail
 
 # Run the NesterDC build.
-ssh -t ross@$BUILD_SERVER_IP "cd $REMOTE_NESTER_PATH && ./dcmake clean && ./dcmake && ./dcmake 1ST_READ.BIN" || fail
+ssh -t $BUILD_SERVER_IP "cd $REMOTE_NESTER_PATH && ./dcmake clean && ./dcmake && ./dcmake 1ST_READ.BIN" || fail
 
 # Copy the most recent build from VM.
 rm -f "$FIRST_READ_FILE"
 rm -f "$UNSCRAMBLED_BINARY"
-rsync -avPI ross@$BUILD_SERVER_IP:$REMOTE_NESTER_PATH/obj/1ST_READ.BIN $FIRST_READ_FILE || fail
-rsync -avPI ross@$BUILD_SERVER_IP:$REMOTE_NESTER_PATH/obj/nester.bin $UNSCRAMBLED_BINARY || fail
+rsync -avPI $BUILD_SERVER_IP:$REMOTE_NESTER_PATH/obj/1ST_READ.BIN $FIRST_READ_FILE || fail
+rsync -avPI $BUILD_SERVER_IP:$REMOTE_NESTER_PATH/obj/nester.bin $UNSCRAMBLED_BINARY || fail
 
 # Remove previous ISO & CDI files.
 rm -f "$DIST_PATH/$GAME_NAME.iso"
@@ -63,4 +63,5 @@ if [ -f "$FIRST_READ_FILE" ]; then
 
     # Burn to CD.
     # burncdi -c /dev/cdrom $DIST_PATH/$GAME_NAME.cdi
+
 fi
