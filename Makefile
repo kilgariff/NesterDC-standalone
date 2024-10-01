@@ -10,6 +10,22 @@ all:
 	$(KOS_CCPLUS) $(KOS_CPPFLAGS) $(KOS_LDFLAGS) -o obj/nester.elf $(STARTUP) $(NESTER_OBJ)/*.o $(NESTERDC_LIBS)
 	$(KOS_STRIP) -o obj/nester-strip.elf obj/nester.elf
 
+build:
+	rsync -avPI ./ ross@dc-build:/home/ross/Desktop/NesterDC || fail
+	ssh -t ross@dc-build "cd /home/ross/Desktop/NesterDC && ./dcmake && ./dcmake 1ST_READ.BIN" || fail
+	rm -f sword.iso sword.cdi
+	rsync -avPI ross@dc-build:/home/ross/Desktop/NesterDC/obj/1ST_READ.BIN disc/cd || fail
+	mkisofs -V sword -G disc/IP.BIN -l -r -o sword.iso disc/cd
+	cdi4dc sword.iso sword.cdi -d
+	
+
+test:
+	/home/tolbert/opt/redream sword.cdi
+
+
+
+#
+
 clean: 
 	-rm -f obj/*
 	$(KOS_MAKE) -C utils clean
